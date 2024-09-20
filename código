@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <string.h>
+
+// estrutura para armazenar os produtos
+struct Produto {
+    int codigo_produto;
+    char nome_produto[30];
+    float valor_unidade, valor_quilo;
+};
+
+// array para armazenar os produtos
+struct Produto listaDeProdutos[100];
+int totalProdutos = 4; // quantidade inicial de produtos no total
+
+// função para verificar se um código de produto já existe
+int codigoExiste(int codigo) {
+    for (int i = 0; i < totalProdutos; i++) {
+        if (listaDeProdutos[i].codigo_produto == codigo) {
+            return 1; 
+        }
+    }
+    return 0;
+}
+
+// função para listar os produtos
+void listarProdutos() {
+    printf("\n\n------------------------ LISTA DE PRODUTOS -------------------------\n");
+    printf("Código \t Produto      \t Valor (por unidade) \t Valor (por quilo)\n");
+    for (int i = 0; i < totalProdutos; i++) {
+        printf("%03d\t %-10s\t R$ %.2f \t\t R$ %.2f\n", listaDeProdutos[i].codigo_produto, listaDeProdutos[i].nome_produto, listaDeProdutos[i].valor_unidade, listaDeProdutos[i].valor_quilo);
+    }
+    printf("--------------------------------------------------------------------\n");
+}
+
+// função para cadastrar um novo produto
+void cadastrarProduto() {
+    if (totalProdutos < 100) {
+        int codigo;
+        printf("\n\n------------------------ CADASTRAR PRODUTO -------------------------\n");
+        
+        // Verifica se o código já existe
+        do {
+            printf("Digite o código do novo produto: ");
+            scanf("%d", &codigo);
+            
+            if (codigoExiste(codigo)) {
+                printf("Código já existe! Por favor, insira um código diferente.\n");
+            }
+        } while (codigoExiste(codigo));
+
+        // Quando o código for válido, armazena o produto
+        listaDeProdutos[totalProdutos].codigo_produto = codigo;
+        printf("Digite o nome do novo produto: ");
+        scanf("%s", listaDeProdutos[totalProdutos].nome_produto);
+        printf("Digite o valor do novo produto por unidade (R$): ");
+        scanf("%f", &listaDeProdutos[totalProdutos].valor_unidade);
+        printf("Digite o valor do novo produto por quilo (R$): ");
+        scanf("%f", &listaDeProdutos[totalProdutos].valor_quilo);
+        printf("--------------------------------------------------------------------\n");
+
+        totalProdutos++;
+        printf("Produto cadastrado com sucesso!\n");
+    } else {
+        printf("Limite de produtos atingido!\n");
+    }
+}
+
+// função para excluir um produto
+void excluirProduto() {
+    int codigo_produto;
+    printf("\n\n------------------------ EXCLUIR PRODUTO -------------------------\n");
+    printf("Digite o código do produto que deseja excluir: ");
+    scanf("%d", &codigo_produto);
+
+    int encontrado = 0;
+    for (int i = 0; i < totalProdutos; i++) {
+        if (listaDeProdutos[i].codigo_produto == codigo_produto) {
+            encontrado = 1;
+            for (int j = i; j < totalProdutos - 1; j++) {
+                listaDeProdutos[j] = listaDeProdutos[j + 1];
+            }
+            totalProdutos--;
+            printf("--------------------------------------------------------------------\n");
+            printf("Produto excluído com sucesso!\n");
+            break;
+        }
+    }
+    
+    if (!encontrado) {
+        printf("--------------------------------------------------------------------\n");
+        printf("Produto com código %d não encontrado.\n", codigo_produto);
+    }
+}
+
+// função principal
+int main() {
+    // esses são os produtos iniciais
+    listaDeProdutos[0] = (struct Produto){1, "Tomate", 5.00, 10.00};
+    listaDeProdutos[1] = (struct Produto){2, "Maca", 3.00, 8.00};
+    listaDeProdutos[2] = (struct Produto){3, "Banana", 2.00, 5.50};
+    listaDeProdutos[3] = (struct Produto){4, "Laranja", 1.00, 4.00};
+
+    int opcao;
+
+    do {
+        // vai exibir o menu principal
+        printf("\nMenu:\n");
+        printf("1. Lista de Produtos\n");
+        printf("2. Cadastrar Produto\n");
+        printf("3. Excluir Produto\n");
+        printf("4. Voltar\n");
+        printf("Informe uma opção válida e aperte a tecla enter: ");
+        scanf("%d", &opcao);
+
+        // verifica a opção escolhida
+        switch (opcao) {
+            case 1:
+                listarProdutos();
+                break;
+            case 2:
+                cadastrarProduto();
+                break;
+            case 3:
+                excluirProduto();
+                break;
+            case 4:
+                printf("Saindo do programa...\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    } while (opcao != 4);
+
+    return 0;
+}
