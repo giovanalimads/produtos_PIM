@@ -1,28 +1,28 @@
 #include <stdio.h>
 #include <string.h>
 
-// estrutura para armazenar os produtos
+// Estrutura para armazenar os produtos
 struct Produto {
     int codigo_produto;
     char nome_produto[30];
     float valor_unidade, valor_quilo;
 };
 
-// array para armazenar os produtos
+// Array para armazenar os produtos
 struct Produto listaDeProdutos[100];
-int totalProdutos = 4; // quantidade inicial de produtos no total
+int totalProdutos = 4; // Quantidade inicial de produtos no total
 
-// função para verificar se um código de produto já existe
+// Função para verificar se um código de produto já existe
 int codigoExiste(int codigo) {
     for (int i = 0; i < totalProdutos; i++) {
         if (listaDeProdutos[i].codigo_produto == codigo) {
-            return 1; 
+            return 1;
         }
     }
     return 0;
 }
 
-// função para listar os produtos
+// Função para listar os produtos
 void listarProdutos() {
     printf("\n\n------------------------ LISTA DE PRODUTOS -------------------------\n");
     printf("Código \t Produto      \t Valor (por unidade) \t Valor (por quilo)\n");
@@ -32,7 +32,7 @@ void listarProdutos() {
     printf("--------------------------------------------------------------------\n");
 }
 
-// função para cadastrar um novo produto
+// Função para cadastrar um novo produto
 void cadastrarProduto() {
     if (totalProdutos < 100) {
         int codigo;
@@ -65,7 +65,7 @@ void cadastrarProduto() {
     }
 }
 
-// função para excluir um produto
+// Função para excluir um produto
 void excluirProduto() {
     int codigo_produto;
     printf("\n\n------------------------ EXCLUIR PRODUTO -------------------------\n");
@@ -92,9 +92,62 @@ void excluirProduto() {
     }
 }
 
-// função principal
+// Função para calcular o preço com base no peso ou quantidade
+void calcularPreco() {
+    int codigo, tipo;
+    char continuar;
+    
+    do {
+        printf("\n\n-------------------- CALCULAR PREÇO --------------------\n");
+        printf("Digite o código do produto que deseja calcular o valor: ");
+        scanf("%d", &codigo);
+        
+        int encontrado = 0;
+        for (int i = 0; i < totalProdutos; i++) {
+            if (listaDeProdutos[i].codigo_produto == codigo) {
+                encontrado = 1;
+                printf("Escolha o tipo de compra:\n");
+                printf("1. Comprar por unidade\n");
+                printf("2. Comprar por quilo\n");
+                printf("Escolha uma opção: ");
+                scanf("%d", &tipo);
+                
+                if (tipo == 1) {
+                    int quantidade;
+                    printf("Digite a quantidade de unidades: ");
+                    scanf("%d", &quantidade);
+                    float preco_total = quantidade * listaDeProdutos[i].valor_unidade;
+                    printf("Total a pagar: R$ %.2f\n", preco_total);
+                } else if (tipo == 2) {
+                    float peso;
+                    printf("Digite o peso em quilos: ");
+                    scanf("%f", &peso);
+                    float preco_total = peso * listaDeProdutos[i].valor_quilo;
+                    printf("Total a pagar: R$ %.2f\n", preco_total);
+                } else {
+                    printf("Opção inválida. Voltando ao menu anterior.\n");
+                }
+                
+                break
+            }
+        }
+        
+        if (!encontrado) {
+            printf("Produto com código %d não encontrado.\n", codigo);
+        }
+
+        printf("Deseja calcular o preço de outro produto? (s/n): ");
+        while (getchar() != '\n'); // Limpa o buffer
+        scanf("%c", &continuar);
+
+    } while (continuar == 's' || continuar == 'S');
+    
+    printf("Voltando ao menu principal...\n");
+}
+
+// Função principal
 int main() {
-    // esses são os produtos iniciais
+    // Produtos iniciais
     listaDeProdutos[0] = (struct Produto){1, "Tomate", 5.00, 10.00};
     listaDeProdutos[1] = (struct Produto){2, "Maca", 3.00, 8.00};
     listaDeProdutos[2] = (struct Produto){3, "Banana", 2.00, 5.50};
@@ -103,16 +156,17 @@ int main() {
     int opcao;
 
     do {
-        // vai exibir o menu principal
+        // Exibe o menu principal
         printf("\nMenu:\n");
         printf("1. Lista de Produtos\n");
         printf("2. Cadastrar Produto\n");
         printf("3. Excluir Produto\n");
-        printf("4. Voltar\n");
+        printf("4. Calcular Preço\n");
+        printf("5. Sair\n");
         printf("Informe uma opção válida e aperte a tecla enter: ");
         scanf("%d", &opcao);
 
-        // verifica a opção escolhida
+        // Verifica a opção escolhida
         switch (opcao) {
             case 1:
                 listarProdutos();
@@ -124,12 +178,15 @@ int main() {
                 excluirProduto();
                 break;
             case 4:
+                calcularPreco();
+                break;
+            case 5:
                 printf("Saindo do programa...\n");
                 break;
             default:
                 printf("Opção inválida. Tente novamente.\n");
         }
-    } while (opcao != 4);
+    } while (opcao != 5);
 
     return 0;
 }
