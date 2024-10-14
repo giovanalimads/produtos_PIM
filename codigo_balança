@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <locale.h>
 
 // Estrutura para armazenar código, nome, valor e tipo de venda (quilo ou granel)
 struct Produto {
@@ -204,6 +205,7 @@ void menuProdutos() {
 }
 
 int main() {
+setlocale(LC_ALL, "Portuguese");
     int opcao;
 
     do {
