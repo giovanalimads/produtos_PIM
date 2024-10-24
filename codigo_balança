@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
+#include <stdlib.h> 
 #include <ctype.h>
-
 
 // Estrutura para armazenar código, nome, valor e tipo de venda (quilo ou granel)
 struct Produto {
@@ -14,6 +14,15 @@ struct Produto {
 // Array para armazenar os produtos
 struct Produto listaDeProdutos[100];
 int totalProdutos = 0;
+
+// Função para limpar a tela
+void limparTela() {
+    #ifdef _WIN32
+        system("cls");   // Comando para limpar a tela no Windows
+    #else
+        system("clear"); // Comando para limpar a tela no Linux ou macOS
+    #endif
+}
 
 // Função para limpar o buffer de entrada
 void limparBuffer() {
@@ -243,41 +252,55 @@ void excluirProduto() {
 void calcularPreco() {
     int codigo;
     char continuar;
-    
+    float totalCompra = 0;  // Variável para armazenar o total da compra
+
     do {
         printf("\n\n-------------- CALCULAR PREÇO --------------\n");
         printf("Digite o código do produto que deseja calcular o valor: ");
-        codigo = lerInteiro();
+        codigo = lerInteiro(); // Lê o código inserido pelo usuário
         
-        int encontrado = 0;
+        int encontrado = 0; // Variável que verifica se o produto foi encontrado
         for (int i = 0; i < totalProdutos; i++) {
             if (listaDeProdutos[i].codigo_produto == codigo) {
                 encontrado = 1;
                 
+                // Verifica se o produto é vendido por quilo
                 if (listaDeProdutos[i].tipo_produto == 1) {
                     float peso;
                     printf("Digite o peso em quilos: ");
-                    peso = lerValorReal();
-                    printf("O valor total do produto %s é: R$ %.2f\n", listaDeProdutos[i].nome_produto, listaDeProdutos[i].valor * peso);
+                    peso = lerValorReal(); // Lê o peso inserido pelo usuário
+                    // Calcula e exibe o valor total baseado no peso
+                    float valorProduto = listaDeProdutos[i].valor * peso;
+                    printf("O valor total do produto %s é: R$ %.2f\n", listaDeProdutos[i].nome_produto, valorProduto);
+                    totalCompra += valorProduto; // Soma o valor ao total da compra
+                    
+                // Caso contrário, o produto é vendido por unidade
                 } else {
                     int quantidade;
                     printf("Digite a quantidade (unidades): ");
-                    quantidade = lerInteiro();
-                    printf("O valor total do produto %s é: R$ %.2f\n", listaDeProdutos[i].nome_produto, listaDeProdutos[i].valor * quantidade);
+                    quantidade = lerInteiro(); // Lê a quantidade inserida pelo usuário
+                    // Calcula e exibe o valor total baseado na quantidade
+                    float valorProduto = listaDeProdutos[i].valor * quantidade;
+                    printf("O valor total do produto %s é: R$ %.2f\n", listaDeProdutos[i].nome_produto, valorProduto);
+                    totalCompra += valorProduto;  / Soma o valor ao total da compra
                 }
-                break;
+                break; // Encerra o loop ao encontrar o produto
             }
         }
         
-        if (!encontrado) {
+        if (!encontrado) { // Caso o produto não seja encontrado na lista
             printf("Produto com código %d não encontrado.\n", codigo);
         }
-        
-        printf("\nDeseja calcular o preço de outro produto?\nDigite 's' para Sim e 'n' para Não (s/n): ");
-        scanf(" %c", &continuar);
-        limparBuffer();  
 
-    } while (continuar == 's' || continuar == 'S');
+        // Pergunta ao usuário se deseja calcular o preço de outro produto
+        printf("\nDeseja calcular o preço de outro produto?\nDigite 's' para Sim e 'n' para Não (s/n): ");
+        scanf(" %c", &continuar); // Lê a escolha do usuário
+        limparBuffer(); // Limpa o buffer de entrada para evitar erros na próxima leitura
+
+    } while (continuar == 's' || continuar == 'S'); // Continua se o usuário digitar 's' ou 'S'
+    
+    // Exibir o total da compra ao final
+    printf("\nO valor total da compra é: R$ %.2f\n", totalCompra);
 }
 
 // Função principal
@@ -288,6 +311,8 @@ setlocale(LC_ALL, "Portuguese");
     inicializarProdutos();
 
     do {
+      
+        
         printf("------------------- MENU -------------------\n");
         printf("1. Listar Produtos\n");
         printf("2. Cadastrar Produto\n");
