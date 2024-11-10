@@ -3,8 +3,9 @@
 #include <string.h>
 #include <stdlib.h> 
 #include <ctype.h>
+#include <Windows.h>
 
-// Estrutura para armazenar código, nome, valor e tipo de venda (quilo ou granel)
+// Estrutura para armazenar c�digo, nome, valor e tipo de venda (quilo ou granel)
 struct Produto {
     int codigo_produto, tipo_produto;
     char nome_produto[30];
@@ -15,7 +16,7 @@ struct Produto {
 struct Produto listaDeProdutos[100];
 int totalProdutos = 0;
 
-// Função para limpar a tela
+// Fun��o para limpar a tela
 void limparTela() {
     #ifdef _WIN32
         system("cls");   // Comando para limpar a tela no Windows
@@ -24,13 +25,13 @@ void limparTela() {
     #endif
 }
 
-// Função para limpar o buffer de entrada
+// Fun��o para limpar o buffer de entrada
 void limparBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-// Função para ler e validar um número inteiro
+// Fun��o para ler e validar um n�mero inteiro
 int lerInteiro() {
     int numero;
     char c;
@@ -41,12 +42,12 @@ int lerInteiro() {
             return numero;
         } else {
             limparBuffer();
-            printf("Entrada inválida! Por favor, digite uma opção válida: ");
+            printf("Entrada inv�lida! Por favor, digite uma op��o v�lida: ");
         }
     }
 }
 
-// Função para ler e validar um valor real
+// Fun��o para ler e validar um valor real
 float lerValorReal() {
     float valor;
     char c; 
@@ -56,12 +57,12 @@ float lerValorReal() {
             return valor;   
         } else {
             limparBuffer(); 
-            printf("Entrada inválida! Por favor, digite um valor real:\n");
+            printf("Entrada inv�lida! Por favor, digite um valor real:\n");
         }
     }
 }
 
-// Função para ler apenas letras
+// Fun��o para ler apenas letras
 void lerNomeProduto(char *nome) {
     while (1) {
         printf("Digite o nome do produto: ");
@@ -70,24 +71,24 @@ void lerNomeProduto(char *nome) {
         // Remove o caractere de nova linha se presente
         nome[strcspn(nome, "\n")] = 0;
 
-        // Verifica se o nome contém apenas letras e espaços
-        int valido = 1; // Assume que é válido
+        // Verifica se o nome cont�m apenas letras e espa�os
+        int valido = 1; // Assume que � v�lido
         for (int i = 0; nome[i] != '\0'; i++) {
-            if (!isalpha(nome[i]) && nome[i] != ' ') { // Aceita apenas letras e espaços
-                valido = 0; // Não é válido
+            if (!isalpha(nome[i]) && nome[i] != ' ') { // Aceita apenas letras e espa�os
+                valido = 0; // N�o � v�lido
                 break;
             }
         }
 
         if (valido) {
-            break; // Nome válido, sai do loop
+            break; // Nome v�lido, sai do loop
         } else {
-            printf("Entrada inválida! O nome do produto deve conter apenas letras.\n");
+            printf("Entrada inv�lida! O nome do produto deve conter apenas letras.\n");
         }
     }
 }
 
-// Função para verificar se um código de produto já existe
+// Fun��o para verificar se um c�digo de produto j� existe
 int codigoExiste(int codigo) {
     for (int i = 0; i < totalProdutos; i++) {
         if (listaDeProdutos[i].codigo_produto == codigo) {
@@ -97,7 +98,7 @@ int codigoExiste(int codigo) {
     return 0;
 }
 
-// Inicialização dos produtos
+// Inicializa��o dos produtos
 void inicializarProdutos() {
     listaDeProdutos[0].codigo_produto = 1;
     strcpy(listaDeProdutos[0].nome_produto, "Manga");
@@ -122,12 +123,12 @@ void inicializarProdutos() {
     totalProdutos = 4;
 }
 
-// Função para listar os produtos
+// Fun��o para listar os produtos
 void listarProdutos() {
     printf("\n\n------------ LISTA DE PRODUTOS -------------\n");
 
     printf("Produtos por QUILO:\n");
-    printf("Código \t Produto \t Valor (R$/Kg)\n");
+    printf("C�digo \t Produto \t Valor (R$/Kg)\n");
     for (int i = 0; i < totalProdutos; i++) {
         if (listaDeProdutos[i].tipo_produto == 1) {
             printf("%03d\t %-10s\t R$ %.2f\n", listaDeProdutos[i].codigo_produto, listaDeProdutos[i].nome_produto, listaDeProdutos[i].valor);
@@ -135,17 +136,19 @@ void listarProdutos() {
     }
     
     printf("\nProdutos por GRANEL:\n");
-    printf("Código \t Produto \t Valor (R$/Unidade)\n");
+    printf("C�digo \t Produto \t Valor (R$/Unidade)\n");
     for (int i = 0; i < totalProdutos; i++) {
         if (listaDeProdutos[i].tipo_produto == 2) {
             printf("%03d\t %-10s\t R$ %.2f\n", listaDeProdutos[i].codigo_produto, listaDeProdutos[i].nome_produto, listaDeProdutos[i].valor);
         }
     }
     
-    printf("--------------------------------------------\n");
+    printf("--------------------------------------------\n\n");
+    system("pause");
+    system("cls");
 }
 
-// Função para cadastrar um novo produto
+// Fun��o para cadastrar um novo produto
 void cadastrarProduto() {
     if (totalProdutos < 100) {
         int opcao_cadastrarMais;
@@ -153,17 +156,17 @@ void cadastrarProduto() {
         
         printf("\n\n------------ CADASTRAR PRODUTO -------------\n");
         
-        // Verifica se o código já existe
+        // Verifica se o c�digo j� existe
         do {
-            printf("Digite o código do novo produto: ");
+            printf("Digite o c�digo do novo produto: ");
             codigo = lerInteiro();
             
             if (codigoExiste(codigo)) {
-                printf("Código existente! Por favor, insira um código diferente.\n");
+                printf("C�digo existente! Por favor, insira um c�digo diferente.\n");
             }
         } while (codigoExiste(codigo));
 
-        // Quando o código for válido, armazena o produto
+        // Quando o c�digo for v�lido, armazena o produto
         listaDeProdutos[totalProdutos].codigo_produto = codigo;
 
         lerNomeProduto(listaDeProdutos[totalProdutos].nome_produto);
@@ -171,10 +174,10 @@ void cadastrarProduto() {
         printf("Digite o valor do produto (R$) (utilize .): ");
         listaDeProdutos[totalProdutos].valor = lerValorReal();
         
-        printf("O produto será vendido por quilo ou granel?:\n");
+        printf("O produto ser� vendido por quilo ou granel?:\n");
         printf("1. Quilo\n");
         printf("2. Granel\n");
-        printf("Informe uma opção válida e aperte a tecla enter: ");
+        printf("Informe uma op��o v�lida e aperte a tecla enter: ");
         
         int opcao = lerInteiro();
 
@@ -183,40 +186,42 @@ void cadastrarProduto() {
             totalProdutos++;
             printf("Produto cadastrado com sucesso!\n\n");
         } else {
-            printf("Opção inválida! Produto não cadastrado.\n");
+            printf("Op��o inv�lida! Produto n�o cadastrado.\n");
         }
 
-        // Pergunta se o usuário deseja cadastrar mais algum produto
+        // Pergunta se o usu�rio deseja cadastrar mais algum produto
         char continuar;
-        printf("Deseja cadastrar mais algum produto?\nDigite 's' para Sim e 'n' para Não (s/n): ");
+        printf("Deseja cadastrar mais algum produto?\nDigite 's' para Sim e 'n' para N�o (s/n): ");
         scanf(" %c", &continuar);
         limparBuffer();
         if (continuar == 's' || continuar == 'S') {
-            cadastrarProduto(); // Recursão para cadastrar outro produto
+            cadastrarProduto(); // Recurs�o para cadastrar outro produto
         }
     
     } else {
         printf("Limite de produtos atingido!\n");
     }
+    system("cls");
 }
 
-// Função para excluir um produto
+// Fun��o para excluir um produto
 void excluirProduto() {
     int codigo_produto;
 
     printf("\n\n------------- EXCLUIR PRODUTO --------------\n");
     while (1) {
-        printf("Digite o código do produto que deseja excluir: ");
+        printf("Digite o c�digo do produto que deseja excluir: ");
         codigo_produto = lerInteiro();
 
         int encontrado = 0;
         for (int i = 0; i < totalProdutos; i++) {
             if (listaDeProdutos[i].codigo_produto == codigo_produto) {
                 encontrado = 1;
-                // Pergunta confirmação
-                printf("Tem certeza que deseja excluir o produto '%s'? \n\nDigite 's' para Sim e 'n' para Não (s/n): ", listaDeProdutos[i].nome_produto);
+                // Pergunta confirma��o
+                printf("Tem certeza que deseja excluir o produto '%s'? \n\nDigite 's' para Sim e 'n' para N�o (s/n): ", listaDeProdutos[i].nome_produto);
                 char confirmar;
                 confirmar = getchar();
+                system("cls");
                 limparBuffer(); 
 
                 if (confirmar == 's' || confirmar == 'S') {
@@ -224,88 +229,95 @@ void excluirProduto() {
                         listaDeProdutos[j] = listaDeProdutos[j + 1];
                     }
                     totalProdutos--;
-                    printf("Produto com código %d excluído com sucesso!\n\n", codigo_produto);
+                    printf("\nProduto com c�digo %d exclu�do com sucesso!\n\n", codigo_produto);
                 } else {
-                    printf("Exclusão cancelada.\n");
+                    printf("\nExclus�o cancelada.\n");
                 }
                 break;
             }
         }
 
         if (!encontrado) {
-            printf("Produto com código %d não encontrado.\n", codigo_produto);
+            printf("\nProduto com c�digo %d n�o encontrado.\n", codigo_produto);
         }
 
         // Pergunta se deseja excluir mais algum produto
-        printf("\nDeseja excluir mais algum produto?\nDigite 's' para Sim e 'n' para Não (s/n): ");
+        printf("\nDeseja excluir mais algum produto?\nDigite 's' para Sim e 'n' para N�o (s/n): ");
         char continuar;
         continuar = getchar();
+        system("cls");
         limparBuffer();
 
         if (continuar != 's' && continuar != 'S') {
             break; 
         }
     }
+    system("cls");
 } 
 
-// Função para calcular o preço com base no tipo (quilo ou granel)
+// Fun��o para calcular o pre�o com base no tipo (quilo ou granel)
 void calcularPreco() {
     int codigo;
     char continuar;
-    float totalCompra = 0;  // Variável para armazenar o total da compra
+    float totalCompra = 0;  // Vari�vel para armazenar o total da compra
 
     do {
-        printf("\n\n-------------- CALCULAR PREÇO --------------\n");
-        printf("Digite o código do produto que deseja calcular o valor: ");
-        codigo = lerInteiro(); // Lê o código inserido pelo usuário
+        printf("\n\n-------------- CALCULAR PRE�O --------------\n");
+        printf("Digite o c�digo do produto que deseja calcular o valor: ");
+        codigo = lerInteiro(); // L� o c�digo inserido pelo usu�rio
         
-        int encontrado = 0; // Variável que verifica se o produto foi encontrado
+        int encontrado = 0; // Vari�vel que verifica se o produto foi encontrado
         for (int i = 0; i < totalProdutos; i++) {
             if (listaDeProdutos[i].codigo_produto == codigo) {
                 encontrado = 1;
                 
-                // Verifica se o produto é vendido por quilo
+                // Verifica se o produto � vendido por quilo
                 if (listaDeProdutos[i].tipo_produto == 1) {
                     float peso;
                     printf("Digite o peso em quilos: ");
-                    peso = lerValorReal(); // Lê o peso inserido pelo usuário
+                    peso = lerValorReal(); // L� o peso inserido pelo usu�rio
                     // Calcula e exibe o valor total baseado no peso
                     float valorProduto = listaDeProdutos[i].valor * peso;
-                    printf("O valor total do produto %s é: R$ %.2f\n", listaDeProdutos[i].nome_produto, valorProduto);
+                    printf("O valor total do produto %s �: R$ %.2f\n", listaDeProdutos[i].nome_produto, valorProduto);
                     totalCompra += valorProduto; // Soma o valor ao total da compra
                     
-                // Caso contrário, o produto é vendido por unidade
+                // Caso contr�rio, o produto � vendido por unidade
                 } else {
                     int quantidade;
                     printf("Digite a quantidade (unidades): ");
-                    quantidade = lerInteiro(); // Lê a quantidade inserida pelo usuário
+                    quantidade = lerInteiro(); // L� a quantidade inserida pelo usu�rio
                     // Calcula e exibe o valor total baseado na quantidade
                     float valorProduto = listaDeProdutos[i].valor * quantidade;
-                    printf("O valor total do produto %s é: R$ %.2f\n", listaDeProdutos[i].nome_produto, valorProduto);
-                    totalCompra += valorProduto;  / Soma o valor ao total da compra
+                    printf("O valor total do produto %s �: R$ %.2f\n", listaDeProdutos[i].nome_produto, valorProduto);
+                    totalCompra += valorProduto;  // Soma o valor ao total da compra
                 }
                 break; // Encerra o loop ao encontrar o produto
             }
         }
         
-        if (!encontrado) { // Caso o produto não seja encontrado na lista
-            printf("Produto com código %d não encontrado.\n", codigo);
+        if (!encontrado) { // Caso o produto n�o seja encontrado na lista
+            printf("Produto com c�digo %d n�o encontrado.\n", codigo);
         }
 
-        // Pergunta ao usuário se deseja calcular o preço de outro produto
-        printf("\nDeseja calcular o preço de outro produto?\nDigite 's' para Sim e 'n' para Não (s/n): ");
-        scanf(" %c", &continuar); // Lê a escolha do usuário
-        limparBuffer(); // Limpa o buffer de entrada para evitar erros na próxima leitura
+        // Pergunta ao usu�rio se deseja calcular o pre�o de outro produto
+        printf("\nDeseja calcular o pre�o de outro produto?\nDigite 's' para Sim e 'n' para N�o (s/n): ");
+        scanf(" %c", &continuar);
+		system("cls"); // L� a escolha do usu�rio
+        limparBuffer(); // Limpa o buffer de entrada para evitar erros na pr�xima leitura
 
-    } while (continuar == 's' || continuar == 'S'); // Continua se o usuário digitar 's' ou 'S'
+    } while (continuar == 's' || continuar == 'S'); // Continua se o usu�rio digitar 's' ou 'S'
     
     // Exibir o total da compra ao final
-    printf("\nO valor total da compra é: R$ %.2f\n", totalCompra);
+    printf("\nO valor total da compra �: R$ %.2f\n\n", totalCompra);
+    system("pause");
+    system("cls");
 }
 
-// Função principal
-int main() {
-setlocale(LC_ALL, "Portuguese");
+// Fun��o principal
+	int main() {
+	setlocale(LC_ALL, "Portuguese");
+	system("color F0");
+	SetConsoleTitle(" BALANCA/REGISTRADORA");
     int opcao;
 
     inicializarProdutos();
@@ -313,15 +325,17 @@ setlocale(LC_ALL, "Portuguese");
     do {
       
         
-        printf("------------------- MENU -------------------\n");
+        printf("------------------------ MENU ------------------------\n\n");
         printf("1. Listar Produtos\n");
         printf("2. Cadastrar Produto\n");
         printf("3. Excluir Produto\n");
         printf("4. Calcular Compra\n");
-        printf("5. Sair do Programa\n");
-        printf("Digite a opção desejada: ");
-        
+        printf("5. Sair do Programa\n\n");
+        printf("------------------------------------------------------\n\n");
+        printf("Digite a op��o desejada: ");
         opcao = lerInteiro();
+        
+        system("cls");
 
         switch (opcao) {
             case 1:
@@ -340,10 +354,10 @@ setlocale(LC_ALL, "Portuguese");
                 printf("Saindo do programa...\n");
                 break;
             default:
-                printf("Opção inválida! Por favor, digite uma opção válida.\n");
+                printf("Op��o inv�lida! Por favor, digite uma op��o v�lida.\n");
                 break;
         }
     } while (opcao != 5);
-
+    
     return 0;
 }
